@@ -21,6 +21,19 @@ const recipeSchema = new mongoose.Schema({
         type: String,
         trim: true
     },
+    difficulty: {
+        type: String,
+        enum: ['facile', 'moyen', 'difficile'],
+        default: 'facile'
+    },
+    category: {
+        type: String,
+        enum: ['entrée', 'plat principal', 'dessert'],
+        default: 'plat principal'
+    },
+    image: {
+        type: String
+    },
     ingredients: [
         {
             type: mongoose.Schema.Types.ObjectId,

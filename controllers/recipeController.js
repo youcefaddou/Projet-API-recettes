@@ -7,13 +7,22 @@ exports.postRecipe = async (req, res) => {
             instructions: req.body.instructions,
             prepareTime: req.body.prepareTime,
             cookingTime: req.body.cookingTime,
+            difficulty: req.body.difficulty,
+            category: req.body.category,
             ingredients: req.body.ingredients || []
         });
+
+        if (req.file) {
+            recipe.image = req.file.filename;
+        }
+
         await recipe.save();
-        const populatedRecipe = await recipeModel.findById(recipe._id).populate('ingredients');
+        
+        const recipeWithIngredients = await recipeModel.findById(recipe._id).populate('ingredients');
+
         res.status(201).json({
             message: 'Recipe created successfully',
-            recipe: populatedRecipe
+            recipe: recipeWithIngredients
         });
     } catch (error) {
         res.status(400).json({
@@ -52,10 +61,23 @@ exports.getRecipe = async (req, res) => {
 
 exports.updateRecipe = async (req, res) => {
     try {
+        const updateData = {
+            title: req.body.title,
+            instructions: req.body.instructions,
+            prepareTime: req.body.prepareTime,
+            cookingTime: req.body.cookingTime,
+            difficulty: req.body.difficulty,
+            category: req.body.category
+        };
+
+        if (req.file) {
+            updateData.image = req.file.filename;
+        }
+
         const recipe = await recipeModel.findByIdAndUpdate(
             req.params.id, 
-            req.body, 
-            { runValidators: true, new: true }
+            updateData,
+            { new: true }
         ).populate('ingredients');
         
         if (!recipe) {

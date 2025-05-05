@@ -3,9 +3,13 @@ const express = require('express');
 const mongoose = require('mongoose');
 const recipeRouter = require('./routers/recipeRouter');
 const ingredientRouter = require('./routers/ingredientRouter');
+const path = require('path');
 
 const app = express();
 app.use(express.json());
+
+// Servir les fichiers statiques du dossier uploads
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Montage des routeurs
 app.use(recipeRouter);
